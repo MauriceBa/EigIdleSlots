@@ -1,0 +1,384 @@
+/* EigIdleSlots - Casino Slot Idle Game */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary: #ff0066;
+    --secondary: #00ffcc;
+    --dark: #1a1a2e;
+    --darker: #0f0f1a;
+    --gold: #ffd700;
+    --silver: #c0c0c0;
+    --bronze: #cd7f32;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 50%, #000 100%);
+    color: #fff;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+#game-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    border: 2px solid var(--primary);
+}
+
+header h1 {
+    font-size: 2.5rem;
+    background: linear-gradient(45deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 30px rgba(255, 0, 102, 0.5);
+    margin-bottom: 15px;
+}
+
+#stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+}
+
+.stat {
+    font-size: 1.3rem;
+    padding: 10px 20px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    border: 1px solid var(--gold);
+}
+
+#machines-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.slot-machine {
+    background: linear-gradient(145deg, #2a2a4a, #1a1a2e);
+    border-radius: 20px;
+    padding: 20px;
+    border: 3px solid var(--gold);
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+    min-width: 280px;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.slot-machine:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+}
+
+.slot-machine h3 {
+    text-align: center;
+    color: var(--gold);
+    margin-bottom: 15px;
+    font-size: 1.4rem;
+}
+
+.slot-display {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 15px;
+    height: 100px;
+    background: #000;
+    border-radius: 10px;
+    padding: 10px;
+    border: 2px solid var(--secondary);
+}
+
+.reel {
+    width: 80px;
+    height: 80px;
+    background: #222;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 2px solid var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.reel img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.payline {
+    height: 3px;
+    background: var(--secondary);
+    margin: 10px 0;
+    border-radius: 2px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.payline.active {
+    opacity: 1;
+    box-shadow: 0 0 10px var(--secondary);
+}
+
+.spin-btn {
+    width: 100%;
+    padding: 12px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    background: linear-gradient(45deg, var(--primary), #ff3377);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.spin-btn:hover:not(:disabled) {
+    background: linear-gradient(45deg, #ff3377, var(--primary));
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(255, 0, 102, 0.5);
+}
+
+.spin-btn:disabled {
+    background: #666;
+    cursor: not-allowed;
+}
+
+.multiplier {
+    text-align: center;
+    margin-top: 10px;
+    color: var(--gold);
+    font-weight: bold;
+}
+
+/* Upgrades Section */
+#upgrades-section, #bonus-section, #achievements-section {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid var(--primary);
+}
+
+#upgrades-section h2, #bonus-section h2, #achievements-section h2 {
+    color: var(--secondary);
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.upgrade-grid, .bonus-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.upgrade-card, .bonus-card {
+    background: linear-gradient(145deg, #3a3a5a, #2a2a4a);
+    border-radius: 10px;
+    padding: 15px;
+    border: 2px solid var(--gold);
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+}
+
+.upgrade-card:hover, .bonus-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--secondary);
+    box-shadow: 0 0 15px rgba(0, 255, 204, 0.3);
+}
+
+.upgrade-card h3, .bonus-card h3 {
+    color: var(--gold);
+    margin-bottom: 8px;
+}
+
+.upgrade-card p, .bonus-card p {
+    font-size: 0.9rem;
+    margin: 5px 0;
+}
+
+.upgrade-card button, .bonus-card button {
+    margin-top: 10px;
+    padding: 8px 16px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Progress Bar */
+.progress-bar {
+    width: 100%;
+    height: 20px;
+    background: #333;
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 10px 0;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold), var(--secondary));
+    transition: width 0.3s;
+}
+
+/* Stats Section */
+#stats-section {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid var(--primary);
+}
+
+#stats-section h2 {
+    color: var(--secondary);
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    text-align: center;
+}
+
+.stats-grid div {
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    border: 1px solid var(--gold);
+}
+
+/* Achievements */
+#achievements-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+
+.achievement-badge {
+    width: 80px;
+    height: 80px;
+    background: #333;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    opacity: 0.3;
+    border: 2px solid #555;
+}
+
+/* Locked Machine */
+.slot-machine.locked {
+    opacity: 0.6;
+    border-color: #666;
+}
+
+.achievement-badge.unlocked {
+    opacity: 1;
+    border-color: var(--gold);
+    box-shadow: 0 0 15px var(--gold);
+}
+
+/* Modal */
+#modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+#modal-overlay.hidden {
+    display: none;
+}
+
+.modal {
+    background: linear-gradient(145deg, #2a2a4a, #1a1a2e);
+    border-radius: 15px;
+    padding: 30px;
+    border: 2px solid var(--gold);
+    max-width: 500px;
+    position: relative;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 2rem;
+    cursor: pointer;
+    color: var(--gold);
+}
+
+.close-btn:hover {
+    color: var(--secondary);
+}
+
+/* Spinning Animation */
+@keyframes spin {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-1000px); }
+}
+
+.spinning {
+    animation: spin 0.5s linear infinite;
+}
+
+/* Notification */
+@keyframes fadeInOut {
+    0% { opacity: 0; transform: translateY(-20px); }
+    10% { opacity: 1; transform: translateY(0); }
+    90% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-20px); }
+}
+
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 25px;
+    background: linear-gradient(45deg, var(--primary), var(--secondary));
+    color: white;
+    border-radius: 10px;
+    animation: fadeInOut 3s ease-in-out;
+    z-index: 2000;
+    font-weight: bold;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    header h1 { font-size: 1.8rem; }
+    .stat { font-size: 1rem; padding: 8px 15px; }
+    .slot-machine { min-width: 250px; }
+    .reel { width: 60px; height: 60px; }
+}
