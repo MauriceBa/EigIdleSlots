@@ -64,7 +64,7 @@ class EigIdleSlots {
         this.updateUI();
         this.startAutoSpins();
         this.startOfflineProgress();
-        setInterval(() => this.saveGame(), 30000); // Auto-save every 30s
+        setInterval(() => this.saveGame(), 30000);
         this.checkAchievements();
     }
     
@@ -156,7 +156,6 @@ class EigIdleSlots {
     }
     
     unlockMachines() {
-        // Update machine UI
         for (let i = 2; i <= 3; i++) {
             const machineEl = document.querySelector(`[data-machine="${i}"]`);
             const btn = machineEl?.querySelector('.spin-btn');
@@ -173,13 +172,11 @@ class EigIdleSlots {
     }
     
     spinMachine(machineId) {
-        // Check if machine is unlocked
         if (machineId > this.machinesUnlocked) {
             this.showNotification('Maschine nicht freigeschaltet! 🔒');
             return;
         }
         
-        // Spin cost based on machine
         const spinCost = machineId * 10;
         if (this.coins < spinCost) {
             this.showNotification('Nicht genug Coins! 💸');
@@ -189,7 +186,6 @@ class EigIdleSlots {
         this.coins -= spinCost;
         this.totalSpins += 1;
         
-        // Get symbol set based on machine
         let symbolSet;
         switch(machineId) {
             case 1: symbolSet = this.symbols; break;
@@ -198,39 +194,33 @@ class EigIdleSlots {
             default: symbolSet = this.symbols;
         }
         
-        // Spin animation
         const reels = [1, 2, 3];
         reels.forEach(reelNum => {
             const reelEl = document.getElementById(`reel${reelNum}-${machineId}`);
             reelEl.classList.add('spinning');
         });
         
-        // Stop after spin speed
         setTimeout(() => {
             reels.forEach(reelNum => {
                 const reelEl = document.getElementById(`reel${reelNum}-${machineId}`);
                 reelEl.classList.remove('spinning');
             });
             
-            // Get random symbols
             const results = [
                 symbolSet[Math.floor(Math.random() * symbolSet.length)],
                 symbolSet[Math.floor(Math.random() * symbolSet.length)],
                 symbolSet[Math.floor(Math.random() * symbolSet.length)]
             ];
             
-            // Update reels
             results.forEach((symbol, i) => {
                 const reelEl = document.getElementById(`reel${i+1}-${machineId}`);
                 if (symbol.x !== undefined) {
-                    // Sprite sheet
                     reelEl.innerHTML = `<div style="width:80px;height:80px;background:url(assets/sprites/fruits.png);background-position:${symbol.x}px 0;"></div>`;
                 } else {
                     reelEl.innerHTML = `<img src="assets/sprites/${symbol.img}" alt="${symbol.name}">`;
                 }
             });
             
-            // Calculate winnings
             const win = this.calculateWin(results);
             if (win > 0) {
                 this.coins += win * this.getCoinMultiplier();
@@ -239,7 +229,6 @@ class EigIdleSlots {
                 this.totalEarned += win;
                 this.jackpotProgress += win;
                 
-                // Free spin bonus for big wins
                 if (win >= 1000) {
                     this.freeSpins += 3;
                     this.showNotification(`BIG WIN! +${win} Coins & Free Spins! 🎁🎉`);
@@ -251,7 +240,7 @@ class EigIdleSlots {
                 payline.classList.add('active');
                 setTimeout(() => payline.classList.remove('active'), 1000);
             } else {
-                this.jackpotProgress += 5; // Progress even on loss
+                this.jackpotProgress += 5;
             }
             
             this.updateUI();
@@ -268,7 +257,6 @@ class EigIdleSlots {
             return symbolValues.reduce((a, b) => a + b, 0) * 10;
         }
         
-        // Partial matches (2 matching)
         const unique = [...new Set(results.map(s => s.name))];
         if (unique.length === 2) {
             return symbolValues.reduce((a, b) => a + b, 0) * 2;
@@ -359,7 +347,7 @@ class EigIdleSlots {
             { label: '10K', value: 10000, color: '#6c5ce7' },
             { label: '50K', value: 50000, color: '#fd79a8' },
             { label: '100K', value: 100000, color: '#00d2d3' },
-            { label: 'x2', value: -1, color: '#2ecc71' } // Double coins
+            { label: 'x2', value: -1, color: '#2ecc71' }
         ];
         
         const svg = document.getElementById('wheel-svg');
@@ -409,14 +397,11 @@ class EigIdleSlots {
         const modal = document.getElementById('modal-overlay');
         const content = document.getElementById('modal-content');
         
-        const nextPrestige = this.prestige + 1;
-        const bonus = Math.pow(2, nextPrestige); // 2x coins permanently
-        
         content.innerHTML = `
             <h2>🌟 Prestige Reset</h2>
             <p style="margin:20px 0;font-size:1.2rem;">Reset alle Fortschritte für permanenten Bonus!</p>
             <p style="color:var(--gold);margin-bottom:20px;">Aktuell: ${this.prestige} Prestige Stufen<br>
-            Nächste Stufe gibt: ${bonus.toFixed(1)}x Coin Earnings</p>
+            Nächste Stufe gibt: ${(Math.pow(2, this.prestige + 1)).toFixed(1)}x Coin Earnings</p>
             <button onclick="game.doPrestige()" style="padding:10px 20px;font-size:1rem;background:var(--primary);color:white;border:none;border-radius:5px;cursor:pointer;">PRESTIGE RESET</button>
         `;
         
@@ -448,17 +433,12 @@ class EigIdleSlots {
     }
     
     checkAchievements() {
-        // Big win achievement
         if (this.highestWin >= 5000 && !this.loadGame('achievement_bigwin')) {
             localStorage.setItem('eigidle_achievement_bigwin', true);
             this.showNotification('Erfolg: Big Winner! 💎');
         }
         
-        // Level achievement
         const newLevel = Math.floor(this.coins / 10000) + 1 + this.prestige;
-        if (newLevel > this.level && newLevel % 5 === 0) {
-            this.showNotification(`Level ${newLevel}! 🎊`);
-        }
         this.level = newLevel;
     }
     
@@ -475,7 +455,6 @@ class EigIdleSlots {
         document.getElementById('prestige-level').textContent = this.prestige;
         document.getElementById('unlocked-machines').textContent = this.machinesUnlocked;
         
-        // Update upgrade prices
         document.getElementById('price-auto_clicker').textContent = this.getUpgradePrice('auto_clicker').toLocaleString();
         document.getElementById('owned-auto_clicker').textContent = this.upgrades.auto_clicker;
         document.getElementById('price-coin_multiplier').textContent = this.getUpgradePrice('coin_multiplier').toLocaleString();
@@ -498,35 +477,14 @@ class EigIdleSlots {
 // Global functions
 let game;
 
-function spinMachine(id) {
-    game.spinMachine(id);
-}
+function spinMachine(id) { game.spinMachine(id); }
+function buyUpgrade(upgrade) { game.buyUpgrade(upgrade); }
+function activateFreeSpins() { game.useFreeSpins(); }
+function activateJackpot() { game.activateJackpot(); }
+function openWheelGame() { game.openWheelGame(); }
+function openPrestige() { game.openPrestige(); }
+function closeModal() { document.getElementById('modal-overlay').classList.add('hidden'); }
 
-function buyUpgrade(upgrade) {
-    game.buyUpgrade(upgrade);
-}
-
-function activateFreeSpins() {
-    game.useFreeSpins();
-}
-
-function activateJackpot() {
-    game.activateJackpot();
-}
-
-function openWheelGame() {
-    game.openWheelGame();
-}
-
-function openPrestige() {
-    game.openPrestige();
-}
-
-function closeModal() {
-    document.getElementById('modal-overlay').classList.add('hidden');
-}
-
-// Initialize
 window.onload = () => {
     game = new EigIdleSlots();
     game.unlockMachines();
