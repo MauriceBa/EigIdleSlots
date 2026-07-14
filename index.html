@@ -15,6 +15,7 @@
                 <div class="stat">⚡ <span id="auto-spins">0</span>/s</div>
                 <div class="stat">🔧 Level: <span id="level">1</span></div>
                 <div class="stat">🎁 <span id="free-spins">0</span> Free Spins</div>
+                <div class="stat">🌟 <span id="prestige-level">0</span> Prestige</div>
             </div>
             <button onclick="game.resetGame()" style="position:absolute;top:20px;right:20px;padding:8px 12px;background:#ff3333;color:white;border:none;border-radius:5px;cursor:pointer;">Reset</button>
         </header>
@@ -115,6 +116,24 @@
                         <p>Chance auf 10.000 Coins!</p>
                         <button>Play Lottery</button>
                     </div>
+                    <div class="bonus-card" onclick="openCoinFlip()">
+                        <h3>Münzwurf 🪙</h3>
+                        <p>Kosten: 500 Coins</p>
+                        <p>50/50 Gewinn</p>
+                        <button>Play Flip</button>
+                    </div>
+                    <div class="bonus-card" onclick="riskDouble()">
+                        <h3>Risk Game 🎲</h3>
+                        <p>Einsatz: 1000 Coins</p>
+                        <p>Verdoppeln oder verlieren!</p>
+                        <button>Play Risk</button>
+                    </div>
+                    <div class="bonus-card" onclick="openLuckyWheel()">
+                        <h3>Lucky Wheel 🎯</h3>
+                        <p>Kosten: 2000 Coins</p>
+                        <p>Großes Jackpot-Potenzial!</p>
+                        <button>Spin Lucky</button>
+                    </div>
                 </div>
             </section>
 
@@ -141,7 +160,6 @@
 
     <script src="js/game.js"></script>
     <script src="js/audio.js"></script>
-    <script src="js/powerups.js"></script>
-    <script src="js/daily.js"></script>
+    <script src="js/gambling.js"></script>
 </body>
 </html>
