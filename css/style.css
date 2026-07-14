@@ -1,4 +1,4 @@
-/* EigIdleSlots - Casino Slot Idle Game */
+/* EigIdleSlots - Enhanced Casino Slot Idle Game */
 * {
     margin: 0;
     padding: 0;
@@ -36,6 +36,7 @@ header {
     background: rgba(255, 255, 255, 0.05);
     border-radius: 15px;
     border: 2px solid var(--primary);
+    position: relative;
 }
 
 header h1 {
@@ -45,21 +46,34 @@ header h1 {
     -webkit-text-fill-color: transparent;
     text-shadow: 0 0 30px rgba(255, 0, 102, 0.5);
     margin-bottom: 15px;
+    animation: titleGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes titleGlow {
+    0% { text-shadow: 0 0 15px rgba(255, 0, 102, 0.5); }
+    100% { text-shadow: 0 0 30px rgba(255, 0, 102, 0.8), 0 0 45px var(--secondary); }
 }
 
 #stats-bar {
     display: flex;
     justify-content: center;
-    gap: 40px;
+    gap: 25px;
     flex-wrap: wrap;
 }
 
 .stat {
-    font-size: 1.3rem;
-    padding: 10px 20px;
-    background: rgba(0, 0, 0, 0.3);
-    border-radius: 10px;
+    font-size: 1.2rem;
+    padding: 8px 18px;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 12px;
     border: 1px solid var(--gold);
+    backdrop-filter: blur(5px);
+    transition: all 0.3s;
+}
+
+.stat:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px var(--gold);
 }
 
 #machines-container {
@@ -78,6 +92,30 @@ header h1 {
     box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
     min-width: 280px;
     transition: transform 0.3s, box-shadow 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+.slot-machine::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.slot-machine.winning::before {
+    opacity: 1;
+    animation: scanline 2s linear infinite;
+}
+
+@keyframes scanline {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(400px); }
 }
 
 .slot-machine:hover {
@@ -102,38 +140,57 @@ header h1 {
     border-radius: 10px;
     padding: 10px;
     border: 2px solid var(--secondary);
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
 }
 
 .reel {
     width: 80px;
     height: 80px;
-    background: #222;
+    background: #111;
     border-radius: 8px;
     overflow: hidden;
     border: 2px solid var(--primary);
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: all 0.3s;
+}
+
+.reel.win-flash {
+    animation: flash 0.3s ease-in-out 3;
+}
+
+@keyframes flash {
+    0%, 100% { border-color: var(--primary); box-shadow: none; }
+    50% { border-color: var(--gold); box-shadow: 0 0 20px var(--gold), 0 0 30px var(--secondary); }
 }
 
 .reel img {
     width: 100%;
     height: 100%;
     object-fit: contain;
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3));
 }
 
 .payline {
-    height: 3px;
-    background: var(--secondary);
-    margin: 10px 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--secondary), var(--gold), var(--secondary));
+    margin: 10px auto;
     border-radius: 2px;
     opacity: 0;
+    width: 80%;
     transition: opacity 0.3s;
+    box-shadow: 0 0 10px var(--secondary);
 }
 
 .payline.active {
     opacity: 1;
-    box-shadow: 0 0 10px var(--secondary);
+    animation: paylinePulse 0.5s ease-in-out infinite;
+}
+
+@keyframes paylinePulse {
+    0%, 100% { box-shadow: 0 0 10px var(--secondary); }
+    50% { box-shadow: 0 0 25px var(--secondary), 0 0 35px var(--gold); }
 }
 
 .spin-btn {
@@ -149,12 +206,30 @@ header h1 {
     transition: all 0.2s;
     text-transform: uppercase;
     letter-spacing: 2px;
+    position: relative;
+    overflow: hidden;
+}
+
+.spin-btn::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(255,255,255,0.2), transparent);
+    transform: rotate(30deg);
+    transition: transform 0.5s;
+}
+
+.spin-btn:hover:not(:disabled)::after {
+    transform: rotate(30deg) translate(50%);
 }
 
 .spin-btn:hover:not(:disabled) {
     background: linear-gradient(45deg, #ff3377, var(--primary));
     transform: scale(1.05);
-    box-shadow: 0 0 15px rgba(255, 0, 102, 0.5);
+    box-shadow: 0 0 20px rgba(255, 0, 102, 0.5);
 }
 
 .spin-btn:disabled {
@@ -162,26 +237,38 @@ header h1 {
     cursor: not-allowed;
 }
 
+.spin-btn.spinning {
+    animation: spinButton 0.2s ease-in-out infinite;
+}
+
+@keyframes spinButton {
+    0%, 100% { transform: scale(1.02); }
+    50% { transform: scale(1.05); }
+}
+
 .multiplier {
     text-align: center;
     margin-top: 10px;
     color: var(--gold);
     font-weight: bold;
+    font-size: 1.1rem;
 }
 
 /* Upgrades Section */
-#upgrades-section, #bonus-section, #achievements-section {
+#upgrades-section, #bonus-section {
     background: rgba(255, 255, 255, 0.05);
     border-radius: 15px;
     padding: 20px;
     margin-bottom: 20px;
     border: 1px solid var(--primary);
+    backdrop-filter: blur(5px);
 }
 
-#upgrades-section h2, #bonus-section h2, #achievements-section h2 {
+#upgrades-section h2, #bonus-section h2 {
     color: var(--secondary);
     margin-bottom: 15px;
     text-align: center;
+    text-shadow: 0 0 10px var(--secondary);
 }
 
 .upgrade-grid, .bonus-grid {
@@ -198,12 +285,14 @@ header h1 {
     cursor: pointer;
     transition: all 0.2s;
     text-align: center;
+    position: relative;
+    overflow: hidden;
 }
 
 .upgrade-card:hover, .bonus-card:hover {
-    transform: translateY(-3px);
+    transform: translateY(-5px) scale(1.02);
     border-color: var(--secondary);
-    box-shadow: 0 0 15px rgba(0, 255, 204, 0.3);
+    box-shadow: 0 0 25px rgba(0, 255, 204, 0.4);
 }
 
 .upgrade-card h3, .bonus-card h3 {
@@ -224,22 +313,41 @@ header h1 {
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s;
+}
+
+.upgrade-card button:hover, .bonus-card button:hover {
+    background: var(--secondary);
+    color: #000;
+    transform: scale(1.05);
 }
 
 /* Progress Bar */
 .progress-bar {
     width: 100%;
     height: 20px;
-    background: #333;
+    background: #222;
     border-radius: 10px;
     overflow: hidden;
     margin: 10px 0;
+    border: 1px solid var(--gold);
 }
 
 .progress-fill {
     height: 100%;
     background: linear-gradient(90deg, var(--gold), var(--secondary));
     transition: width 0.3s;
+    box-shadow: 0 0 10px var(--gold);
+}
+
+.progress-fill.glow {
+    animation: progressGlow 1s ease-in-out infinite;
+}
+
+@keyframes progressGlow {
+    0%, 100% { box-shadow: 0 0 10px var(--gold); }
+    50% { box-shadow: 0 0 20px var(--gold), 0 0 30px var(--secondary); }
 }
 
 /* Stats Section */
@@ -249,6 +357,7 @@ header h1 {
     padding: 20px;
     margin-bottom: 20px;
     border: 1px solid var(--primary);
+    backdrop-filter: blur(5px);
 }
 
 #stats-section h2 {
@@ -265,43 +374,16 @@ header h1 {
 }
 
 .stats-grid div {
-    padding: 10px;
+    padding: 12px;
     background: rgba(0, 0, 0, 0.3);
     border-radius: 8px;
     border: 1px solid var(--gold);
-}
-
-/* Achievements */
-#achievements-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center;
-}
-
-.achievement-badge {
-    width: 80px;
-    height: 80px;
-    background: #333;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2rem;
-    opacity: 0.3;
-    border: 2px solid #555;
 }
 
 /* Locked Machine */
 .slot-machine.locked {
     opacity: 0.6;
     border-color: #666;
-}
-
-.achievement-badge.unlocked {
-    opacity: 1;
-    border-color: var(--gold);
-    box-shadow: 0 0 15px var(--gold);
 }
 
 /* Modal */
@@ -311,11 +393,12 @@ header h1 {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.9);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 1000;
+    backdrop-filter: blur(5px);
 }
 
 #modal-overlay.hidden {
@@ -324,11 +407,18 @@ header h1 {
 
 .modal {
     background: linear-gradient(145deg, #2a2a4a, #1a1a2e);
-    border-radius: 15px;
+    border-radius: 20px;
     padding: 30px;
     border: 2px solid var(--gold);
     max-width: 500px;
     position: relative;
+    box-shadow: 0 0 40px var(--gold);
+}
+
+.modal h2 {
+    text-align: center;
+    color: var(--secondary);
+    margin-bottom: 20px;
 }
 
 .close-btn {
@@ -338,28 +428,19 @@ header h1 {
     font-size: 2rem;
     cursor: pointer;
     color: var(--gold);
+    transition: color 0.2s;
 }
 
 .close-btn:hover {
     color: var(--secondary);
 }
 
-/* Spinning Animation */
-@keyframes spin {
-    0% { transform: translateY(0); }
-    100% { transform: translateY(-1000px); }
-}
-
-.spinning {
-    animation: spin 0.5s linear infinite;
-}
-
 /* Notification */
 @keyframes fadeInOut {
-    0% { opacity: 0; transform: translateY(-20px); }
-    10% { opacity: 1; transform: translateY(0); }
-    90% { opacity: 1; transform: translateY(0); }
-    100% { opacity: 0; transform: translateY(-20px); }
+    0% { opacity: 0; transform: translateY(-20px) scale(0.8); }
+    10% { opacity: 1; transform: translateY(0) scale(1); }
+    90% { opacity: 1; transform: translateY(0) scale(1); }
+    100% { opacity: 0; transform: translateY(-20px) scale(0.8); }
 }
 
 .notification {
@@ -373,44 +454,54 @@ header h1 {
     animation: fadeInOut 3s ease-in-out;
     z-index: 2000;
     font-weight: bold;
+    box-shadow: 0 0 20px var(--primary);
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-    header h1 { font-size: 1.8rem; }
-    .stat { font-size: 1rem; padding: 8px 15px; }
-    .slot-machine { min-width: 250px; }
-    .reel { width: 60px; height: 60px; }
+/* Slot Reel Strip Animation */
+@keyframes spinStrip {
+    0% { background-position: 0 0; }
+    100% { background-position: 0 -1000px; }
 }
 
-/* Lottery Styles */
-#lottery-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 10px;
-    margin: 15px 0;
+.spinning-strip {
+    background: repeating-linear-gradient(
+        to bottom,
+        #ff6b6b 0px, #ffd93d 20px, #ff9f1c 40px, #2ecc71 60px, 
+        #45b7d1 80px, #6c5ce7 100px, #fd79a8 120px, #00d2d3 140px, #ff6b6b 160px
+    );
+    background-size: 100% 160px;
+    animation: spinStrip 0.05s linear infinite;
 }
 
-#lottery-grid button {
-    font-size: 2rem;
-    padding: 15px;
-    background: var(--gold);
-    color: #000;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: bold;
+/* Slot Machine Body Glow Effect */
+.slot-machine.winning {
+    animation: pulse 0.5s ease-in-out infinite alternate;
+    box-shadow: 0 0 40px var(--gold), 0 0 80px var(--secondary);
 }
 
-#lottery-grid button:hover {
-    background: var(--secondary);
-    transform: scale(1.1);
+@keyframes pulse {
+    0% { box-shadow: 0 0 20px var(--gold); }
+    100% { box-shadow: 0 0 50px var(--gold), 0 0 80px var(--secondary); }
 }
 
-/* Floating Coins Animation */
+/* Reel Stop Flash */
+@keyframes flash {
+    0%, 100% { border-color: var(--primary); box-shadow: none; }
+    50% { border-color: var(--gold); box-shadow: 0 0 20px var(--gold), 0 0 30px var(--secondary); }
+}
+
+.reel.win-flash {
+    animation: flash 0.3s ease-in-out 3;
+}
+
+/* Wheel Animation */
+@keyframes wheelSpin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(1440deg); }
+}
 @keyframes floatCoin {
-    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-    100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+    0% { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
+    100% { transform: translateY(-100vh) rotate(360deg) scale(0.5); opacity: 0; }
 }
 
 .coin-float {
@@ -425,3 +516,12 @@ header h1 {
 .machine-classic { background: linear-gradient(145deg, #2a2a4a, #1a1a2e); }
 .machine-fruit { background: linear-gradient(145deg, #2a4a2a, #1a2e1a); border-color: #2ecc71; }
 .machine-lucky { background: linear-gradient(145deg, #4a2a2a, #2e1a1a); border-color: #e74c3c; }
+
+/* Responsive */
+@media (max-width: 768px) {
+    header h1 { font-size: 1.8rem; }
+    .stat { font-size: 1rem; padding: 8px 15px; }
+    .slot-machine { min-width: 250px; }
+    .reel { width: 60px; height: 60px; }
+    #stats-bar { gap: 15px; }
+}

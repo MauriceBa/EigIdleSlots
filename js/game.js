@@ -202,15 +202,22 @@ class EigIdleSlots {
         const reels = [1, 2, 3];
         reels.forEach(reelNum => {
             const reelEl = document.getElementById(`reel${reelNum}-${machineId}`);
-            reelEl.classList.add('spinning');
+            reelEl.classList.add('spinning-strip');
+            reelEl.classList.add('win-flash');
         });
+        
+        // Add winning effect to machine
+        const machine = document.querySelector(`[data-machine="${machineId}"]`);
+        machine.classList.add('winning');
         
         setTimeout(() => {
             reels.forEach(reelNum => {
                 const reelEl = document.getElementById(`reel${reelNum}-${machineId}`);
-                reelEl.classList.remove('spinning');
+                reelEl.classList.remove('spinning-strip');
+                reelEl.classList.remove('win-flash');
             });
             
+            machine.classList.remove('winning');
             const results = [
                 symbolSet[Math.floor(Math.random() * symbolSet.length)],
                 symbolSet[Math.floor(Math.random() * symbolSet.length)],
