@@ -39,7 +39,7 @@ class EigIdleSlots {
             { name: 'diamond', img: 'clover.png', value: 250, color: '#00d2d3' }
         ];
         
-        // Fruit symbols (extracted from sprite sheet)
+        // Fruit symbols
         this.fruitSymbols = [
             { name: 'cherry', img: 'fruits.png', value: 10, x: 0, color: '#ff6b6b' },
             { name: 'lemon', img: 'fruits.png', value: 15, x: -24, color: '#ffd93d' },
@@ -64,6 +64,7 @@ class EigIdleSlots {
         this.updateUI();
         this.startAutoSpins();
         this.startOfflineProgress();
+        this.startCoinRain();
         setInterval(() => this.saveGame(), 30000);
         this.checkAchievements();
     }
@@ -104,7 +105,7 @@ class EigIdleSlots {
     }
     
     getCoinMultiplier() {
-        return 1 + (this.upgrades.coin_multiplier * 0.25);
+        return (1 + (this.upgrades.coin_multiplier * 0.25)) * Math.pow(2, this.prestige);
     }
     
     getUpgradePrice(upgrade) {
@@ -162,7 +163,11 @@ class EigIdleSlots {
             if (i <= this.machinesUnlocked && machineEl) {
                 machineEl.classList.remove('locked');
                 const h3 = machineEl.querySelector('h3');
-                if (h3) h3.innerHTML = i === 2 ? 'Fruit Slots' : 'Lucky 7s';
+                if (h3) {
+                    const spans = h3.querySelectorAll('span');
+                    spans.forEach(s => s.remove());
+                    h3.textContent = i === 2 ? 'Fruit Slots 🍒' : 'Lucky 7s 🍀';
+                }
                 if (btn) {
                     btn.disabled = false;
                     btn.textContent = i === 2 ? 'SPIN (20💰)' : 'SPIN (50💰)';
@@ -312,6 +317,18 @@ class EigIdleSlots {
             }
         }
         localStorage.setItem('eigidle_lastTime', Date.now());
+    }
+    
+    startCoinRain() {
+        // Random coin bonus every 30-60 seconds
+        setInterval(() => {
+            if (Math.random() < 0.2) {
+                const bonus = Math.floor(Math.random() * 500) + 100;
+                this.coins += bonus;
+                this.showNotification(`Coin Regen! +${bonus} Coins! 🌧️💰`);
+                this.updateUI();
+            }
+        }, 45000);
     }
     
     openWheelGame() {
@@ -484,6 +501,38 @@ function activateJackpot() { game.activateJackpot(); }
 function openWheelGame() { game.openWheelGame(); }
 function openPrestige() { game.openPrestige(); }
 function closeModal() { document.getElementById('modal-overlay').classList.add('hidden'); }
+function openLottery() { 
+    if (game.coins < 500) {
+        game.showNotification('500 Coins für Lottery! 🎟️');
+        return;
+    }
+    game.coins -= 500;
+    const modal = document.getElementById('modal-overlay');
+    const content = document.getElementById('modal-content');
+    content.innerHTML = `
+        <h2>🎟️ Lottery</h2>
+        <p style="margin:20px 0;">Wähle eine Nummer (0-9):</p>
+        <div id="lottery-grid">
+            ${[0,1,2,3,4,5,6,7,8,9].map(n => `<button onclick="playLottery(${n})">${n}</button>`).join('')}
+        </div>
+        <p style="color:var(--gold);margin-top:15px;">Gewinn: 10.000 Coins wenn richtig!</p>
+    `;
+    modal.classList.remove('hidden');
+    game.saveGame();
+}
+
+function playLottery(choice) {
+    const winning = Math.floor(Math.random() * 10);
+    if (choice === winning) {
+        game.coins += 10000;
+        game.showNotification(`JACKPOT! Richtig! 🎉`);
+    } else {
+        game.showNotification(`Falsch! Gewinner war: ${winning}`);
+    }
+    closeModal();
+    game.saveGame();
+    game.updateUI();
+}
 
 window.onload = () => {
     game = new EigIdleSlots();

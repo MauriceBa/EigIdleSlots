@@ -22,8 +22,8 @@
         <main>
             <!-- Multiple Slot Machines -->
             <div id="machines-container">
-                <div class="slot-machine" data-machine="1">
-                    <h3>Classic Slots</h3>
+                <div class="slot-machine machine-classic" data-machine="1">
+                    <h3>Classic Slots 🎲</h3>
                     <div class="slot-display">
                         <div class="reel" id="reel1-1"><img src="assets/sprites/cherries.png" alt="?"></div>
                         <div class="reel" id="reel2-1"><img src="assets/sprites/lemon.png" alt="?"></div>
@@ -34,15 +34,15 @@
                     <div class="multiplier">x<span id="mult-1">1</span></div>
                 </div>
 
-                <div class="slot-machine locked" data-machine="2" id="machine-2">
-                    <h3>Fruit Slots <span style="color:#888;">(GESCHLOSSEN)</span></h3>
-                    <p style="text-align:center;color:#ff6666;">Kaufe "New Machine" Upgrade um zu entsperren!</p>
+                <div class="slot-machine locked machine-fruit" data-machine="2" id="machine-2">
+                    <h3>Fruit Slots 🍒 <span style="color:#888;">(GESCHLOSSEN)</span></h3>
+                    <p style="text-align:center;color:#ff6666;">Kaufe "Neue Maschine" Upgrade!</p>
                     <button class="spin-btn" disabled>GESCHLOSSEN</button>
                 </div>
 
-                <div class="slot-machine locked" data-machine="3" id="machine-3">
-                    <h3>Lucky 7s <span style="color:#888;">(GESCHLOSSEN)</span></h3>
-                    <p style="text-align:center;color:#ff6666;">Kaufe "New Machine" Upgrade um zu entsperren!</p>
+                <div class="slot-machine locked machine-lucky" data-machine="3" id="machine-3">
+                    <h3>Lucky 7s 🍀 <span style="color:#888;">(GESCHLOSSEN)</span></h3>
+                    <p style="text-align:center;color:#ff6666;">Kaufe "Neue Maschine" Upgrade!</p>
                     <button class="spin-btn" disabled>VERSCHLOSSEN</button>
                 </div>
             </div>
@@ -52,28 +52,28 @@
                 <h2>🔧 Upgrades</h2>
                 <div class="upgrade-grid">
                     <div class="upgrade-card" onclick="buyUpgrade('auto_clicker')">
-                        <h3>Auto-Spinner</h3>
+                        <h3>Auto-Spinner ⚡</h3>
                         <p>+1 Auto-Spin pro Sekunde</p>
                         <p class="price">💰 <span id="price-auto_clicker">100</span></p>
                         <p>Owned: <span id="owned-auto_clicker">0</span></p>
                         <button class="buy-btn">Kaufen</button>
                     </div>
                     <div class="upgrade-card" onclick="buyUpgrade('coin_multiplier')">
-                        <h3>Coin Multiplier</h3>
+                        <h3>Coin Multiplier 💰</h3>
                         <p>+25% Coin Earnings</p>
                         <p class="price">💰 <span id="price-coin_multiplier">500</span></p>
                         <p>Owned: <span id="owned-coin_multiplier">0</span></p>
                         <button class="buy-btn">Kaufen</button>
                     </div>
                     <div class="upgrade-card" onclick="buyUpgrade('machine_speed')">
-                        <h3>Spin Speed</h3>
+                        <h3>Spin Speed ⚡</h3>
                         <p>-10% Spin Animation</p>
                         <p class="price">💰 <span id="price-machine_speed">1,000</span></p>
                         <p>Owned: <span id="owned-machine_speed">0</span></p>
                         <button class="buy-btn">Kaufen</button>
                     </div>
                     <div class="upgrade-card" onclick="buyUpgrade('new_machine')">
-                        <h3>Neue Maschine</h3>
+                        <h3>Neue Maschine 🎰</h3>
                         <p>Freigeschaltete: <span id="unlocked-machines">1</span>/3</p>
                         <p class="price">💰 <span id="price-new_machine">5,000</span></p>
                         <p>Owned: <span id="owned-new_machine">0</span></p>
@@ -87,27 +87,33 @@
                 <h2>🎁 Bonus Features</h2>
                 <div class="bonus-grid">
                     <div class="bonus-card" onclick="activateFreeSpins()">
-                        <h3>Free Spins</h3>
+                        <h3>Free Spins 🎰</h3>
                         <p>Verfügbar: <span id="free-spins-count">0</span></p>
                         <button>Use Free Spins</button>
                     </div>
                     <div class="bonus-card" onclick="openWheelGame()">
-                        <h3>Glücksrad</h3>
+                        <h3>Glücksrad 🎡</h3>
                         <p>Kosten: 1,000 Coins</p>
                         <button>Spin Wheel</button>
                     </div>
                     <div class="bonus-card" onclick="activateJackpot()">
-                        <h3>Magic Jackpot</h3>
-                        <p>Progress: <span id="jackpot-progress">0</span>/<span id="jackpot-target">100</span></p>
+                        <h3>Magic Jackpot 🎰</h3>
+                        <p>Progress: <span id="jackpot-progress">0</span>/100</p>
                         <div class="progress-bar">
-                            <div class="progress-fill" id="jackpot-fill"></div>
+                            <div class="progress-fill" id="jackpot-fill" style="width: 0%"></div>
                         </div>
                         <button>Jackpot Claimen</button>
                     </div>
                     <div class="bonus-card" onclick="openPrestige()">
-                        <h3>Prestige Reset</h3>
+                        <h3>Prestige Reset 🌟</h3>
                         <p>Prestige: <span id="prestige-level">0</span></p>
                         <button>Reset für Bonus</button>
+                    </div>
+                    <div class="bonus-card" onclick="openLottery()">
+                        <h3>Lottery 🎟️</h3>
+                        <p>Kosten: 500 Coins</p>
+                        <p>Chance auf 10.000 Coins!</p>
+                        <button>Play Lottery</button>
                     </div>
                 </div>
             </section>

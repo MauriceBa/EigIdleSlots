@@ -382,3 +382,46 @@ header h1 {
     .slot-machine { min-width: 250px; }
     .reel { width: 60px; height: 60px; }
 }
+
+/* Lottery Styles */
+#lottery-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    margin: 15px 0;
+}
+
+#lottery-grid button {
+    font-size: 2rem;
+    padding: 15px;
+    background: var(--gold);
+    color: #000;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+#lottery-grid button:hover {
+    background: var(--secondary);
+    transform: scale(1.1);
+}
+
+/* Floating Coins Animation */
+@keyframes floatCoin {
+    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+}
+
+.coin-float {
+    position: fixed;
+    font-size: 2rem;
+    z-index: 100;
+    pointer-events: none;
+    animation: floatCoin 3s linear;
+}
+
+/* Machine Themes */
+.machine-classic { background: linear-gradient(145deg, #2a2a4a, #1a1a2e); }
+.machine-fruit { background: linear-gradient(145deg, #2a4a2a, #1a2e1a); border-color: #2ecc71; }
+.machine-lucky { background: linear-gradient(145deg, #4a2a2a, #2e1a1a); border-color: #e74c3c; }
