@@ -200,24 +200,48 @@ class EigIdleSlots {
         }
         
         const reels = [1, 2, 3];
+        const originalSymbols = [];
+        
+        // Store original symbols and start spinning
         reels.forEach(reelNum => {
             const reelEl = document.getElementById(`reel${reelNum}-${machineId}`);
-            reelEl.classList.add('spinning-strip');
-            reelEl.classList.add('win-flash');
+            originalSymbols.push(reelEl.innerHTML);
+            reelEl.classList.add('spinning');
+            reelEl.dataset.original = originalSymbols[reelNum - 1];
         });
         
         // Add winning effect to machine
         const machine = document.querySelector(`[data-machine="${machineId}"]`);
         machine.classList.add('winning');
         
-        setTimeout(() => {
-            reels.forEach(reelNum => {
+        // Stagger reel stopping
+        const stopTimes = [0.5, 1.0, 1.5].map(t => t * this.spinSpeed / 500);
+        
+        reels.forEach((reelNum, index) => {
+            setTimeout(() => {
                 const reelEl = document.getElementById(`reel${reelNum}-${machineId}`);
-                reelEl.classList.remove('spinning-strip');
-                reelEl.classList.remove('win-flash');
-            });
-            
+                reelEl.classList.remove('spinning');
+                
+                // Show random symbol during spin
+                const results = [
+                    symbolSet[Math.floor(Math.random() * symbolSet.length)],
+                    symbolSet[Math.floor(Math.random() * symbolSet.length)],
+                    symbolSet[Math.floor(Math.random() * symbolSet.length)]
+                ];
+                
+                const symbol = results[index];
+                if (symbol.x !== undefined) {
+                    reelEl.innerHTML = `<div style="width:80px;height:80px;background:url(assets/sprites/fruits.png);background-position:${symbol.x}px 0;"></div>`;
+                } else {
+                    reelEl.innerHTML = `<img src="assets/sprites/${symbol.img}" alt="${symbol.name}">`;
+                }
+            }, stopTimes[index]);
+        });
+        
+        // Final result after all reels stopped
+        setTimeout(() => {
             machine.classList.remove('winning');
+            
             const results = [
                 symbolSet[Math.floor(Math.random() * symbolSet.length)],
                 symbolSet[Math.floor(Math.random() * symbolSet.length)],
