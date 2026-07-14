@@ -236,6 +236,7 @@ class EigIdleSlots {
                 
                 if (win >= 1000) {
                     this.freeSpins += 3;
+                    spawnFloatingCoins(10);
                     this.showNotification(`BIG WIN! +${win} Coins & Free Spins! 🎁🎉`);
                 } else {
                     this.showNotification(`Gewonnen! +${win} Coins! 🎉`);

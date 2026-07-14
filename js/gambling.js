@@ -1,5 +1,20 @@
 // EigIdleSlots - Gambling Mini-Games
 
+// Floating coin visual effect
+function spawnFloatingCoins(count) {
+    for (let i = 0; i < count; i++) {
+        setTimeout(() => {
+            const coin = document.createElement('div');
+            coin.className = 'coin-float';
+            coin.textContent = '💰';
+            coin.style.left = Math.random() * window.innerWidth + 'px';
+            coin.style.animationDuration = (2 + Math.random() * 3) + 's';
+            document.body.appendChild(coin);
+            setTimeout(() => coin.remove(), 5000);
+        }, i * 100);
+    }
+}
+
 // Risk/Reward Double or Nothing
 function riskDouble() {
     if (game.coins < 1000) {
